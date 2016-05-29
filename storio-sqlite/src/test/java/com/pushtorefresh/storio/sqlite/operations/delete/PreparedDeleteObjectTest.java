@@ -209,6 +209,7 @@ public class PreparedDeleteObjectTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -239,6 +240,7 @@ public class PreparedDeleteObjectTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -269,6 +271,7 @@ public class PreparedDeleteObjectTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);

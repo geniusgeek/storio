@@ -14,8 +14,8 @@ import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
 import rx.Completable;
 import rx.Observable;
+import rx.Scheduler;
 import rx.Single;
-import rx.schedulers.Schedulers;
 
 import static com.pushtorefresh.storio.internal.Checks.checkNotNull;
 import static com.pushtorefresh.storio.internal.Environment.throwExceptionIfRxJavaIsNotAvailable;
@@ -69,7 +69,7 @@ public class PreparedPutContentValues extends PreparedPut<PutResult> {
      * <p>
      * <dl>
      * <dt><b>Scheduler:</b></dt>
-     * <dd>Operates on {@link Schedulers#io()}.</dd>
+     * <dd>Operates on {@link StorIOSQLite#defaultScheduler()} if not {@code null}.</dd>
      * </dl>
      *
      * @return non-null {@link Observable} which will perform Put Operation.
@@ -91,7 +91,7 @@ public class PreparedPutContentValues extends PreparedPut<PutResult> {
      * <p>
      * <dl>
      * <dt><b>Scheduler:</b></dt>
-     * <dd>Operates on {@link Schedulers#io()}.</dd>
+     * <dd>Operates on {@link StorIOSQLite#defaultScheduler()} if not {@code null}.</dd>
      * </dl>
      *
      * @return non-null {@link Observable} which will perform Put Operation.
@@ -103,16 +103,22 @@ public class PreparedPutContentValues extends PreparedPut<PutResult> {
     public Observable<PutResult> asRxObservable() {
         throwExceptionIfRxJavaIsNotAvailable("asRxObservable()");
 
-        return Observable
-                .create(OnSubscribeExecuteAsBlocking.newInstance(this))
-                .subscribeOn(Schedulers.io());
+        final Observable<PutResult> observable =
+                Observable.create(OnSubscribeExecuteAsBlocking.newInstance(this));
+
+        final Scheduler scheduler = storIOSQLite.defaultScheduler();
+        if (scheduler != null) {
+            observable.subscribeOn(scheduler);
+        }
+
+        return observable;
     }
 
     /**
      * Creates {@link Single} which will perform Put Operation lazily when somebody subscribes to it and send result to observer.
      * <dl>
      * <dt><b>Scheduler:</b></dt>
-     * <dd>Operates on {@link Schedulers#io()}.</dd>
+     * <dd>Operates on {@link StorIOSQLite#defaultScheduler()} if not {@code null}.</dd>
      * </dl>
      *
      * @return non-null {@link Single} which will perform Put Operation.
@@ -124,15 +130,22 @@ public class PreparedPutContentValues extends PreparedPut<PutResult> {
     public Single<PutResult> asRxSingle() {
         throwExceptionIfRxJavaIsNotAvailable("asRxSingle()");
 
-        return Single.create(OnSubscribeExecuteAsBlockingSingle.newInstance(this))
-                .subscribeOn(Schedulers.io());
+        final Single<PutResult> single =
+                Single.create(OnSubscribeExecuteAsBlockingSingle.newInstance(this));
+
+        final Scheduler scheduler = storIOSQLite.defaultScheduler();
+        if (scheduler != null) {
+            single.subscribeOn(scheduler);
+        }
+
+        return single;
     }
 
     /**
      * Creates {@link Completable} which will perform Put Operation lazily when somebody subscribes to it.
      * <dl>
      * <dt><b>Scheduler:</b></dt>
-     * <dd>Operates on {@link Schedulers#io()}.</dd>
+     * <dd>Operates on {@link StorIOSQLite#defaultScheduler()} if not {@code null}.</dd>
      * </dl>
      *
      * @return non-null {@link Completable} which will perform Put Operation.
@@ -142,9 +155,16 @@ public class PreparedPutContentValues extends PreparedPut<PutResult> {
     @Override
     public Completable asRxCompletable() {
         throwExceptionIfRxJavaIsNotAvailable("asRxCompletable()");
-        return Completable
-                .create(OnSubscribeExecuteAsBlockingCompletable.newInstance(this))
-                .subscribeOn(Schedulers.io());
+
+        final Completable completable =
+                Completable.create(OnSubscribeExecuteAsBlockingCompletable.newInstance(this));
+
+        final Scheduler scheduler = storIOSQLite.defaultScheduler();
+        if (scheduler != null) {
+            completable.subscribeOn(scheduler);
+        }
+
+        return completable;
     }
 
     /**

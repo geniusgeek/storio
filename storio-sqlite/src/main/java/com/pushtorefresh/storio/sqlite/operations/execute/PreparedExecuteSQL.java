@@ -15,8 +15,8 @@ import com.pushtorefresh.storio.sqlite.queries.RawQuery;
 import java.util.Set;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Single;
-import rx.schedulers.Schedulers;
 
 import static com.pushtorefresh.storio.internal.Checks.checkNotNull;
 import static com.pushtorefresh.storio.internal.Environment.throwExceptionIfRxJavaIsNotAvailable;
@@ -77,7 +77,7 @@ public class PreparedExecuteSQL implements PreparedOperation<Object> {
      * <p>
      * <dl>
      * <dt><b>Scheduler:</b></dt>
-     * <dd>Operates on {@link Schedulers#io()}.</dd>
+     * <dd>Operates on {@link StorIOSQLite#defaultScheduler()} if not {@code null}.</dd>
      * </dl>
      *
      * @return non-null {@link Observable} which will perform Delete Operation
@@ -103,7 +103,7 @@ public class PreparedExecuteSQL implements PreparedOperation<Object> {
      * <p>
      * <dl>
      * <dt><b>Scheduler:</b></dt>
-     * <dd>Operates on {@link Schedulers#io()}.</dd>
+     * <dd>Operates on {@link StorIOSQLite#defaultScheduler()} if not {@code null}.</dd>
      * </dl>
      *
      * @return non-null {@link Observable} which will perform Delete Operation
@@ -118,16 +118,22 @@ public class PreparedExecuteSQL implements PreparedOperation<Object> {
     public Observable<Object> asRxObservable() {
         throwExceptionIfRxJavaIsNotAvailable("asRxObservable()");
 
-        return Observable
-                .create(OnSubscribeExecuteAsBlocking.newInstance(this))
-                .subscribeOn(Schedulers.io());
+        final Observable<Object> observable =
+                Observable.create(OnSubscribeExecuteAsBlocking.newInstance(this));
+
+        final Scheduler scheduler = storIOSQLite.defaultScheduler();
+        if (scheduler != null) {
+            observable.subscribeOn(scheduler);
+        }
+
+        return observable;
     }
 
     /**
      * Creates {@link Single} which will perform Execute SQL Operation lazily when somebody subscribes to it and send result to observer.
      * <dl>
      * <dt><b>Scheduler:</b></dt>
-     * <dd>Operates on {@link Schedulers#io()}.</dd>
+     * <dd>Operates on {@link StorIOSQLite#defaultScheduler()} if not {@code null}.</dd>
      * </dl>
      *
      * @return non-null {@link Single} which will perform Execute SQL Operation.
@@ -139,8 +145,15 @@ public class PreparedExecuteSQL implements PreparedOperation<Object> {
     public Single<Object> asRxSingle() {
         throwExceptionIfRxJavaIsNotAvailable("asRxSingle()");
 
-        return Single.create(OnSubscribeExecuteAsBlockingSingle.newInstance(this))
-                .subscribeOn(Schedulers.io());
+        final Single<Object> single =
+                Single.create(OnSubscribeExecuteAsBlockingSingle.newInstance(this));
+
+        final Scheduler scheduler = storIOSQLite.defaultScheduler();
+        if (scheduler != null) {
+            single.subscribeOn(scheduler);
+        }
+
+        return single;
     }
 
     /**

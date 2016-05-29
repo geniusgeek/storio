@@ -238,6 +238,7 @@ public class PreparedGetNumberOfResultsTest {
                 = new PreparedGetNumberOfResults(mock(StorIOSQLite.class), (Query) null, (GetResolver<Integer>) mock(GetResolver.class));
 
         try {
+            //noinspection CheckResult
             preparedGetNumberOfResults.asRxObservable();
             failBecauseExceptionWasNotThrown(StorIOException.class);
         } catch (StorIOException expected) {

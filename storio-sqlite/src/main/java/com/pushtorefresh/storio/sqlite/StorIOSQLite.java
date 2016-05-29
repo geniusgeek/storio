@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import rx.Observable;
+import rx.Scheduler;
 
 import static com.pushtorefresh.storio.internal.Checks.checkNotEmpty;
 
@@ -140,6 +141,14 @@ public abstract class StorIOSQLite implements Closeable {
         checkNotEmpty(table, "Table can not be null or empty");
         return observeChangesInTables(Collections.singleton(table));
     }
+
+    /**
+     * Provides an scheduler
+     *
+     * @return
+     */
+    @Nullable
+    public abstract Scheduler defaultScheduler();
 
     /**
      * An API for low level interaction with DB, it's part of public API, so feel free to use it,

@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import rx.Observable;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 
 import static com.pushtorefresh.storio.internal.Checks.checkNotNull;
 import static com.pushtorefresh.storio.internal.Environment.RX_JAVA_IS_IN_THE_CLASS_PATH;
@@ -47,14 +49,21 @@ public class DefaultStorIOSQLite extends StorIOSQLite {
     @NonNull
     private final ChangesBus<Changes> changesBus = new ChangesBus<Changes>(RX_JAVA_IS_IN_THE_CLASS_PATH);
 
+    @Nullable
+    private final Scheduler defaultScheduler;
+
     /**
      * Implementation of {@link com.pushtorefresh.storio.sqlite.StorIOSQLite.LowLevel}.
      */
     @NonNull
     private final Internal lowLevel;
 
-    protected DefaultStorIOSQLite(@NonNull SQLiteOpenHelper sqLiteOpenHelper, @Nullable Map<Class<?>, SQLiteTypeMapping<?>> typesMapping) {
+    protected DefaultStorIOSQLite(
+            @NonNull SQLiteOpenHelper sqLiteOpenHelper,
+            @Nullable Map<Class<?>, SQLiteTypeMapping<?>> typesMapping,
+            @Nullable Scheduler defaultScheduler) {
         this.sqLiteOpenHelper = sqLiteOpenHelper;
+        this.defaultScheduler = defaultScheduler;
         lowLevel = new LowLevelImpl(typesMapping);
     }
 
@@ -81,6 +90,12 @@ public class DefaultStorIOSQLite extends StorIOSQLite {
     public Observable<Changes> observeChangesInTables(@NonNull final Set<String> tables) {
         // indirect usage of RxJava filter() required to avoid problems with ClassLoader when RxJava is not in ClassPath
         return ChangesFilter.apply(observeChanges(), tables);
+    }
+
+    @Nullable
+    @Override
+    public Scheduler defaultScheduler() {
+        return defaultScheduler;
     }
 
     /**
@@ -159,6 +174,9 @@ public class DefaultStorIOSQLite extends StorIOSQLite {
 
         private Map<Class<?>, SQLiteTypeMapping<?>> typesMapping;
 
+        @Nullable
+        private Scheduler defaultScheduler = RX_JAVA_IS_IN_THE_CLASS_PATH ? Schedulers.io() : null;
+
         CompleteBuilder(@NonNull SQLiteOpenHelper sqLiteOpenHelper) {
             this.sqLiteOpenHelper = sqLiteOpenHelper;
         }
@@ -185,6 +203,12 @@ public class DefaultStorIOSQLite extends StorIOSQLite {
             return this;
         }
 
+        @NonNull
+        public CompleteBuilder defaultScheduler(@Nullable Scheduler defaultScheduler) {
+            this.defaultScheduler = defaultScheduler;
+            return this;
+        }
+
         /**
          * Builds {@link DefaultStorIOSQLite} instance with required params.
          *
@@ -192,7 +216,7 @@ public class DefaultStorIOSQLite extends StorIOSQLite {
          */
         @NonNull
         public DefaultStorIOSQLite build() {
-            return new DefaultStorIOSQLite(sqLiteOpenHelper, typesMapping);
+            return new DefaultStorIOSQLite(sqLiteOpenHelper, typesMapping, defaultScheduler);
         }
     }
 

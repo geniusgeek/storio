@@ -90,6 +90,7 @@ public class PreparedDeleteByQueryTest {
         testSubscriber.assertValue(expectedDeleteResult);
 
         verify(storIOSQLite).lowLevel();
+        verify(storIOSQLite).defaultScheduler();
         verify(deleteResolver).performDelete(same(storIOSQLite), same(deleteQuery));
         verify(internal).notifyAboutChanges(eq(Changes.newInstance(deleteQuery.table())));
         verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
@@ -129,6 +130,7 @@ public class PreparedDeleteByQueryTest {
         testSubscriber.assertValue(expectedDeleteResult);
 
         verify(storIOSQLite).lowLevel();
+        verify(storIOSQLite).defaultScheduler();
         verify(deleteResolver).performDelete(same(storIOSQLite), same(deleteQuery));
         verify(internal).notifyAboutChanges(eq(Changes.newInstance(deleteQuery.table())));
         verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
@@ -168,6 +170,7 @@ public class PreparedDeleteByQueryTest {
         testSubscriber.assertNoValues();
 
         verify(storIOSQLite).lowLevel();
+        verify(storIOSQLite).defaultScheduler();
         verify(deleteResolver).performDelete(same(storIOSQLite), same(deleteQuery));
         verify(internal).notifyAboutChanges(eq(Changes.newInstance(deleteQuery.table())));
         verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
@@ -234,6 +237,7 @@ public class PreparedDeleteByQueryTest {
         assertThat(cause).hasMessage("test exception");
 
         verify(deleteResolver).performDelete(same(storIOSQLite), any(DeleteQuery.class));
+        verify(storIOSQLite).defaultScheduler();
         verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
     }
 
@@ -269,6 +273,7 @@ public class PreparedDeleteByQueryTest {
         assertThat(cause).hasMessage("test exception");
 
         verify(deleteResolver).performDelete(same(storIOSQLite), any(DeleteQuery.class));
+        verify(storIOSQLite).defaultScheduler();
         verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
     }
 
@@ -303,6 +308,7 @@ public class PreparedDeleteByQueryTest {
         IllegalStateException cause = (IllegalStateException) expected.getCause();
         assertThat(cause).hasMessage("test exception");
 
+        verify(storIOSQLite).defaultScheduler();
         verify(deleteResolver).performDelete(same(storIOSQLite), any(DeleteQuery.class));
         verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
     }

@@ -410,6 +410,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -444,6 +445,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -478,6 +480,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -544,6 +547,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -578,6 +582,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -612,6 +617,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
 
             verify(storIOSQLite).delete();
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(internal).typeMapping(TestItem.class);
             verify(internal, never()).delete(any(DeleteQuery.class));
             verifyNoMoreInteractions(storIOSQLite, internal);
@@ -692,6 +698,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
             verify(internal).endTransaction();
 
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(deleteResolver).performDelete(same(storIOSQLite), anyObject());
             verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
         }
@@ -733,6 +740,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
             verify(internal).endTransaction();
 
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(deleteResolver).performDelete(same(storIOSQLite), anyObject());
             verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
         }
@@ -774,6 +782,7 @@ public class PreparedDeleteCollectionOfObjectsTest {
             verify(internal).endTransaction();
 
             verify(storIOSQLite).lowLevel();
+            verify(storIOSQLite).defaultScheduler();
             verify(deleteResolver).performDelete(same(storIOSQLite), anyObject());
             verifyNoMoreInteractions(storIOSQLite, internal, deleteResolver);
         }
